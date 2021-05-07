@@ -78,4 +78,25 @@ NoSql Database
         }
     ]
 }
+
+2. OR Query
+{
+    $or : [
+        {
+            "name" : "Sankalp Pratap Nishad"
+        },
+        {
+            "mail" : "nishad.sankalp@gmail.com"
+        }
+    ]
+}
+
+3. IN query
+
+{
+  "name" : {
+    $in : ["Pratap Narayan", "Sankalp Pratap Nishad"]
+  }
+}
+
 ```
