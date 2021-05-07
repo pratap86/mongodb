@@ -26,3 +26,56 @@ NoSql Database
 |`Column`|`Field`|
 |`Row`|`Document`|
 |`Foreign Key`|`Sub Document(with or without Reference)`|
+
+#### MongoDB Add Documents
+``` ruby
+// Add Document
+// 1
+{
+  "name" : "Pratap Narayan"
+}
+
+// 2
+
+{
+   "name" : "Sankalp Pratap Nishad", 
+    "mail" : "nishad.sankalp@gmail.com", 
+    "department" : {
+        "name" : "CS", 
+        "location" : "IND"
+    }
+}
+
+// 3
+
+{
+  "name" : "Deepika", 
+    "mail" : "nishad.deepika@yahoo.com", 
+    "subjects" : [
+        {
+            "name" : "Java", 
+            "marks_obtained" : 70.0
+        }, 
+        {
+            "name" : "Spring", 
+            "marks_obtained" : 80.0
+        }
+    ]
+}
+
+```
+
+#### MonogDB Queries
+``` ruby
+ 1. AND Query
+{
+    $and : [
+        {
+            "name" : "Sankalp Pratap Nishad"
+        },
+        {
+            "mail" : "nishad.sankalp@gmail.com"
+        }
+    ]
+}
+```
