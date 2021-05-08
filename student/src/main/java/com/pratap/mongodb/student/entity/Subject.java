@@ -25,4 +25,12 @@ public class Subject {
     public void setMarksObtained(int marksObtained) {
         this.marksObtained = marksObtained;
     }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "name='" + name + '\'' +
+                ", marksObtained=" + marksObtained +
+                '}';
+    }
 }

@@ -43,4 +43,14 @@ public class StudentRequestModel {
     public void setSubjects(List<Subject> subjects) {
         this.subjects = subjects;
     }
+
+    @Override
+    public String toString() {
+        return "StudentRequestModel{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", department=" + department +
+                ", subjects=" + subjects +
+                '}';
+    }
 }

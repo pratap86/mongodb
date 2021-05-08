@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pratap.mongodb.student.dto.StudentDto;
 import com.pratap.mongodb.student.entity.StudentEntity;
 import com.pratap.mongodb.student.repository.StudentRepository;
+import com.pratap.mongodb.student.utils.JsonUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +25,13 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDto create(StudentDto studentDto) throws JsonProcessingException {
 
-        LOGGER.info("Going to save Student");
-        if (studentRepository.findByEmail(studentDto.getEmail()) != null)
+        LOGGER.info("Method {}", "create()");
+        LOGGER.info("Service going create new record with StudentDto \n{}", JsonUtils.prettyPrintJson(studentDto));
+        if (studentRepository.findByEmail(studentDto.getEmail()) != null) {
+            //log the exception and throw
+            LOGGER.error("Record already exist");
             throw new RuntimeException("Record already exist");
-
+        }
         StudentEntity studentEntity = modelMapper.map(studentDto, StudentEntity.class);
 
         StudentEntity savedStudent = studentRepository.save(studentEntity);

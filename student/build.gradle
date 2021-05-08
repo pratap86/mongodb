@@ -12,13 +12,14 @@ repositories {
 	mavenCentral()
 }
 
-dependencies {
+def var = dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.modelmapper:modelmapper:2.4.2'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'com.google.code.gson:gson:2.8.6'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+var
 
 test {
 	useJUnitPlatform()

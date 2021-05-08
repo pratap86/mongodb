@@ -4,6 +4,7 @@ import com.pratap.mongodb.student.dto.StudentDto;
 import com.pratap.mongodb.student.model.request.StudentRequestModel;
 import com.pratap.mongodb.student.model.response.StudentResponseModel;
 import com.pratap.mongodb.student.service.StudentService;
+import com.pratap.mongodb.student.utils.JsonUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +29,13 @@ public class StudentController {
     @PostMapping
     public StudentResponseModel createStudent(@RequestBody StudentRequestModel studentRequestModel) throws Exception {
 
-        LOGGER.info("Controller going to trigger the Service layer, req is: ", studentRequestModel);
-
+        LOGGER.info("methodName {}","createStudent()");
+        LOGGER.info("RequestType {}", "POST");
+        LOGGER.info("Controller going to trigger the Service layer with req is StudentRequestModel:\n{}", JsonUtils.prettyPrintJson(studentRequestModel));
         StudentDto studentDto = modelMapper.map(studentRequestModel, StudentDto.class);
         StudentDto fetchedDto = studentService.create(studentDto);
 
-        LOGGER.info("Response received from Service", fetchedDto);
+        LOGGER.info("Response received from Service, StudentDto\n{}", fetchedDto);
         return modelMapper.map(fetchedDto, StudentResponseModel.class);
     }
 }
