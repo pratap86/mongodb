@@ -29,8 +29,8 @@ public class StudentServiceImpl implements StudentService {
         LOGGER.info("Service going create new record with StudentDto \n{}", JsonUtils.prettyPrintJson(studentDto));
         if (studentRepository.findByEmail(studentDto.getEmail()) != null) {
             //log the exception and throw
-            LOGGER.error("Record already exist");
-            throw new RuntimeException("Record already exist");
+            LOGGER.error("mail id already exist, mail : {}",studentDto.getEmail());
+            throw new RuntimeException("Duplicate mail Id");
         }
         StudentEntity studentEntity = modelMapper.map(studentDto, StudentEntity.class);
 
