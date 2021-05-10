@@ -73,13 +73,14 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<StudentResponseModel> getStudents(){
+    public List<StudentResponseModel> getStudents(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                  @RequestParam(value = "limit", defaultValue = "2") int limit){
 
         LOGGER.info("methodName {}","getStudents()");
         LOGGER.info("RequestType {}", "GET");
         LOGGER.info("Controller going to trigger the Service layer to fetched all Student record");
 
-       return studentService.getStudents().stream()
+       return studentService.getStudents(page, limit).stream()
                 .map(studentDto -> modelMapper.map(studentDto, StudentResponseModel.class)).collect(Collectors.toList());
     }
 
@@ -88,7 +89,7 @@ public class StudentController {
 
         LOGGER.info("methodName {}","updateStudentDetails()");
         LOGGER.info("RequestType {}", "PATCH");
-        LOGGER.info("Controller going to trigger the Service layer to partially update Student record");
+        LOGGER.info("Controller going to trigger the Service layer to partially update Student record, StudentUpdateRequestModel \n{}", studentUpdateRequestModel);
         try {
             StudentDto fetchedStudentDetails = studentService.findStudentById(id);
 
@@ -100,6 +101,17 @@ public class StudentController {
         } catch (StudentServiceException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStudentById(@PathVariable String id){
+
+        LOGGER.info("methodName {}","deleteStudentById()");
+        LOGGER.info("RequestType {}", "DELETE");
+        LOGGER.info("Controller going to trigger the Service layer to Delete Student record by Id : {}", id);
+
+        studentService.deleteStudentById(id);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
 }

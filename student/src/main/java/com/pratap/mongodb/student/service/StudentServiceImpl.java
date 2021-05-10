@@ -11,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,11 +65,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDto> getStudents() {
+    public List<StudentDto> getStudents(int page, int limit) {
 
         LOGGER.info("Method {}", "getStudents()");
-        LOGGER.info("Service going to load all Student record");
-        List<StudentEntity> studentEntities = studentRepository.findAll();
+        LOGGER.info("Service going to load all Student record or Paginated record, page : {}, and limit :{}", page, limit);
+
+        Pageable pageableRequest = PageRequest.of(page, limit);
+        List<StudentEntity> studentEntities = studentRepository.findAll(pageableRequest).getContent();
         LOGGER.info("Fetched Student response, List<StudentEntity> \n{}", JsonUtils.prettyPrintJson(studentEntities));
         return studentEntities.stream()
                 .map(studentEntity -> modelMapper.map(studentEntity, StudentDto.class)).collect(Collectors.toList());
@@ -86,5 +90,47 @@ public class StudentServiceImpl implements StudentService {
 
         StudentEntity updatedStudent = studentRepository.save(studentEntity);
         return modelMapper.map(updatedStudent, StudentDto.class);
+    }
+
+    @Override
+    public void deleteStudentById(String id) {
+
+        LOGGER.info("Method {}", "deleteStudentById()");
+        studentRepository.deleteById(id);
+    }
+
+    @Override
+    public List<StudentDto> getStudentsByName(String name) {
+
+        LOGGER.info("Method {}", "getStudentsByName()");
+        List<StudentEntity> fetchedStudents = studentRepository.findByName(name);
+        if (fetchedStudents == null)
+            throw new StudentServiceException("No records associated with Student name :"+name);
+
+        return fetchedStudents.stream().map(studentEntity -> modelMapper.map(studentEntity, StudentDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public StudentDto getStudentByNameAndEmail(String name, String email) {
+
+        LOGGER.info("Method {}", "getStudentByNameAndEmail()");
+
+        StudentEntity savedStudent = studentRepository.findByNameAndEmail(name, email);
+        if (savedStudent == null)
+            throw new StudentServiceException("No records associated with Student name : "+name +" AND mail : "+email);
+
+        return modelMapper.map(savedStudent, StudentDto.class);
+    }
+
+    @Override
+    public StudentDto getStudentByNameOrEmail(String name, String email) {
+
+        LOGGER.info("Method {}", "getStudentByNameOrEmail()");
+
+        StudentEntity savedStudent = studentRepository.findByNameOrEmail(name, email);
+        if (savedStudent == null)
+            throw new StudentServiceException("No records associated with Student name : "+name +" OR mail : "+email);
+
+        return modelMapper.map(savedStudent, StudentDto.class);
     }
 }

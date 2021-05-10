@@ -13,7 +13,17 @@ public interface StudentService {
 
     StudentDto findStudentById(String id);
 
-    List<StudentDto> getStudents();
+    List<StudentDto> getStudents(int page, int limit);
 
     StudentDto updateStudentPartialDetails(StudentUpdateDto studentUpdateDto, StudentDto studentDto);
+
+    void deleteStudentById(String id);
+
+    List<StudentDto> getStudentsByName(String name);
+
+    StudentDto getStudentByNameAndEmail(String name, String email);
+
+    StudentDto getStudentByNameOrEmail(String name, String email);
+
+
 }
