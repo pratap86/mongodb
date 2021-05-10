@@ -1,4 +1,4 @@
-package com.pratap.mongodb.student.dto;
+package com.pratap.mongodb.student.web.dto;
 
 import com.pratap.mongodb.student.entity.Department;
 import com.pratap.mongodb.student.entity.Subject;
