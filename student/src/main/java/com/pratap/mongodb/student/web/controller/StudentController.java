@@ -1,10 +1,5 @@
 package com.pratap.mongodb.student.web.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import com.pratap.mongodb.student.exceptions.StudentServiceException;
 import com.pratap.mongodb.student.model.request.StudentRequestModel;
 import com.pratap.mongodb.student.model.request.StudentUpdateRequestModel;
@@ -37,8 +32,6 @@ public class StudentController {
 
     private ModelMapper modelMapper;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
     @Autowired
     public StudentController(StudentService studentService, ModelMapper modelMapper){
         this.studentService = studentService;
@@ -46,7 +39,7 @@ public class StudentController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StudentResponseModel> createStudent(@RequestBody StudentRequestModel studentRequestModel) {
+    public ResponseEntity<StudentResponseModel> createStudent(@RequestBody StudentRequestModel studentRequestModel) throws Exception {
 
         LOGGER.info("methodName {}","createStudent()");
         LOGGER.info("RequestType {}", "POST");
@@ -73,15 +66,37 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<StudentResponseModel> getStudents(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                  @RequestParam(value = "limit", defaultValue = "2") int limit){
+    public List<StudentResponseModel> getStudents(){
 
         LOGGER.info("methodName {}","getStudents()");
         LOGGER.info("RequestType {}", "GET");
         LOGGER.info("Controller going to trigger the Service layer to fetched all Student record");
 
-       return studentService.getStudents(page, limit).stream()
+       return studentService.getStudents().stream()
                 .map(studentDto -> modelMapper.map(studentDto, StudentResponseModel.class)).collect(Collectors.toList());
+    }
+
+    @GetMapping("/pageBy")
+    public List<StudentResponseModel> getStudentsWithPagination(@RequestParam int pageNumber, @RequestParam int pageSize){
+
+        LOGGER.info("methodName {}","getStudentsWithPagination()");
+        LOGGER.info("RequestType {}", "GET");
+        LOGGER.info("Controller going to trigger the Service layer to fetched all Student record with Pagination, pageNumber : {} & pageSize : {}", pageNumber, pageSize);
+
+        return studentService.getStudentsWithPagination(pageNumber, pageSize).stream()
+                .map(studentDto -> modelMapper.map(studentDto, StudentResponseModel.class)).collect(Collectors.toList());
+    }
+
+    @GetMapping("/sortBy")
+    public List<StudentResponseModel> getStudentsWithSorting(){
+
+        LOGGER.info("methodName {}","getStudentsWithSorting()");
+        LOGGER.info("RequestType {}", "GET");
+        LOGGER.info("Controller going to trigger the Service layer to fetched all Student record with Sort");
+
+        List<StudentDto> students = studentService.getStudentsWithSorting();
+
+        return students.stream().map(studentDto -> modelMapper.map(studentDto, StudentResponseModel.class)).collect(Collectors.toList());
     }
 
     @PatchMapping(path = "/{id}")
@@ -111,7 +126,7 @@ public class StudentController {
         LOGGER.info("Controller going to trigger the Service layer to Delete Student record by Id : {}", id);
 
         studentService.deleteStudentById(id);
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
